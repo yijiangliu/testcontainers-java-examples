@@ -3,11 +3,18 @@ import biz.paluch.spinach.DisqueURI;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testcontainers.containers.GenericContainer;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.rnorth.visibleassertions.VisibleAssertions.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.rnorth.visibleassertions.VisibleAssertions.assertEquals;
+import static org.rnorth.visibleassertions.VisibleAssertions.context;
+import static org.rnorth.visibleassertions.VisibleAssertions.info;
 
 /**
  * Created by rnorth on 03/01/2016.
@@ -20,6 +27,8 @@ public class DisqueBackedMailSenderTest {
     private DisqueClient disqueClient;
 
     private MailSenderService service;
+
+    @Mock
     private MailApiClient mockMailApiClient;
 
     private MailMessage dummyMessage1;
@@ -29,8 +38,10 @@ public class DisqueBackedMailSenderTest {
     @Before
     public void setup() {
         context("");
+
+        MockitoAnnotations.initMocks(this);
         disqueClient = new DisqueClient(DisqueURI.create(container.getContainerIpAddress(), container.getMappedPort(7711)));
-        mockMailApiClient = mock(MailApiClient.class);
+        //mockMailApiClient = mock(MailApiClient.class);
 
         service = new DisqueBackedMailSenderService(disqueClient, mockMailApiClient);
 
@@ -39,6 +50,7 @@ public class DisqueBackedMailSenderTest {
         dummyMessage1 = new MailMessage("Dummy Message 1", "bob@example.com", "Test body");
         dummyMessage2 = new MailMessage("Dummy Message 2", "bob@example.com", "Test body");
         dummyMessage3 = new MailMessage("Dummy Message 3", "bob@example.com", "Test body");
+
     }
 
     @Test
